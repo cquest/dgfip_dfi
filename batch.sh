@@ -9,10 +9,7 @@ TRUNCATE dgfip_dfi_raw;
 # import fichier texte dans fichier 'raw' intermédiaire
 for f in *.txt.zip
 do
-  txt=$(echo $f | sed 's/.zip//')
-  7z e $f
-  psql -c "\copy dgfip_dfi_raw FROM '$txt' WITH (FORMAT CSV, HEADER FALSE, DELIMITER '!')"
-  rm $txt
+  zcat $f | psql -c "copy dgfip_dfi_raw FROM STDIN WITH (FORMAT CSV, HEADER FALSE, DELIMITER '@')"
 done
 
 psql -c "
