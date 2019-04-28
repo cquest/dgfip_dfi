@@ -36,11 +36,7 @@ CREATE INDEX dgfip_dfi_filles ON dgfip_dfi USING GIN (filles);
 "
 
 # export JSON
-psql -c "\copy (select json_build_object('id', id, 'depcom',depcom, 'id_dfi',id_dfi, 'lot_dfi',lot, 'nature',nature_dfi, 'date',validation::date, 'meres',meres, 'filles',filles) from dgfip_dfi) to dfi.json;"
+psql -c "copy (select json_build_object('id', id, 'depcom',depcom, 'id_dfi',id_dfi, 'lot_dfi',lot, 'nature',nature_dfi, 'date',validation::date, 'meres',meres, 'filles',filles) from dgfip_dfi) to STDOUT;" | gzip -9 > dfi.json.gz
 
 # export postgresql
-pg_dump -t dgfip_dfi -o -O -x > dfi.sql
-
-# compression gzip
-gzip -9 dfi.sql
-gzip -9 dfi.json
+pg_dump -t dgfip_dfi -o -O -x | gzip -9 > dfi.sql.gz
